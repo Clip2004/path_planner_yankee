@@ -24,6 +24,10 @@ setup(
     entry_points={
         'console_scripts': [
             'path_planner_dijkstra_node_yankee = path_planner_yankee.path_planner_dijkstra_node_yankee:main',
+            'path_planner_Astar_node_yankee = path_planner_yankee.path_planner_Astar_node_yankee:main',
+            'path_planner_dijkstra_improved_node_yankee = path_planner_yankee.path_planner_dijkstra_improved_node_yankee:main',
+            'path_mux_node_yankee = path_planner_yankee.path_mux_node_yankee:main',
+            'goal_manager_node_yankee = path_planner_yankee.goal_manager_node_yankee:main',
         ],
     },
 )
