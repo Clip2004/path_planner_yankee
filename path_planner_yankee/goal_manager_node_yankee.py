@@ -71,6 +71,7 @@ class GoalManager(Node):
                 self.current_index = 0
                 self.start_sequence = False
                 self.waiting_for_reach = False
+                self.waypoints = []
                 return
             next_goal = self.waypoints[self.current_index]
             self.publisher.publish(next_goal)
