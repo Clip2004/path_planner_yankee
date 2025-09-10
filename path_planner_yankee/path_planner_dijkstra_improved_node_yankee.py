@@ -28,7 +28,7 @@ class DijkstraPlanner(Node):
         super().__init__('dijkstra_planner')
 		
         self.declare_parameter('map_topic', '/map')
-        self.declare_parameter('goal_topic', '/goal_pose')
+        self.declare_parameter('goal_topic', '/goal_waypoint')
         self.declare_parameter('path_topic', '/planned_path')
         self.declare_parameter('base_frame', 'base_link')
         self.declare_parameter('global_frame', 'map')
@@ -79,7 +79,7 @@ class DijkstraPlanner(Node):
             obstacles = self.inflate_obstacles(obstacles, inflate_radius, msg.info.resolution)
 
         self._obstacles = obstacles
-        self.get_logger().info(f'Map received: {W}x{H}, res={msg.info.resolution:.3f} m/px')
+        # self.get_logger().info(f'Map received: {W}x{H}, res={msg.info.resolution:.3f} m/px')
 
     def goal_cb(self, goal_msg: PoseStamped):
         # Compute path on each new goal

@@ -15,7 +15,7 @@ class GoalManager(Node):
         self.reached_sub = self.create_subscription(Bool,'/goal_reached',self.reached_callback,10)
         # Subscripción al joystick
         self.joystick_sub = self.create_subscription(Joy,'/joy',self.joystick_callback,10)
-        # Publicador de los waypoints hacia el tracker
+        # Publicador de los waypoints hacia el planner
         self.publisher = self.create_publisher(PoseStamped,'/goal_waypoint',10)
 
         self.waypoints = []
@@ -57,7 +57,6 @@ class GoalManager(Node):
             self.start_sequence = True
             self.get_logger().info("Secuencia iniciada")
             self.publish_next_waypoint()
-            self.current_index += 1
             time.sleep(0.5)  # Debounce
         if msg.buttons[1] == 1:
             self.start_sequence = False
@@ -82,9 +81,13 @@ class GoalManager(Node):
 def main(args=None):
     rclpy.init(args=args)
     node = GoalManager()
-    rclpy.spin(node)
-    node.destroy_node()
-    rclpy.shutdown()
+    try:
+        rclpy.spin(node)
+    except KeyboardInterrupt:
+        pass
+    finally:
+        node.destroy_node()
+        rclpy.shutdown()
 
 
 if __name__ == '__main__':
