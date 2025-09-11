@@ -12,12 +12,12 @@ class AStarNode(Node):
         super().__init__('a_star_node')
         # --- add these params at __init__ ---
         self.occ_thresh = self.declare_parameter('occ_thresh', 100).value
-        self.robot_radius_m = self.declare_parameter('robot_radius_m', 0.5).value
-        self.safety_margin_m = self.declare_parameter('safety_margin_m', 0.05).value
+        self.robot_radius_m = self.declare_parameter('robot_radius_m', 0.21213203435).value
+        self.safety_margin_m = self.declare_parameter('safety_margin_m', 0.1).value
 
         # Subscribers
         self.create_subscription(OccupancyGrid, '/map', self.map_callback, 10)
-        self.create_subscription(PoseStamped, '/goal_pose', self.goal_callback, 10)
+        self.create_subscription(PoseStamped, '/goal_waypoint', self.goal_callback, 10)
 
         # Publishers
         self.path_pub = self.create_publisher(Path, '/planned_path', 10)
@@ -97,6 +97,10 @@ class AStarNode(Node):
 
         path = self.a_star(start, goal)
 
+        if not path or len(path) < 2:
+            self.get_logger().warn("A* did not find a valid path!")
+            return  # No publicar path vacío
+
         ros_path = Path()
         ros_path.header.frame_id = 'map'
         for (x, y) in path:
@@ -108,6 +112,7 @@ class AStarNode(Node):
             ros_path.poses.append(pose)
 
         self.path_pub.publish(ros_path)
+        self.get_logger().info("Path published")
     def world_to_grid(self, pos):
         mx = int((pos.x - self.map.info.origin.position.x) / self.map.info.resolution)
         my = int((pos.y - self.map.info.origin.position.y) / self.map.info.resolution)
@@ -119,6 +124,11 @@ class AStarNode(Node):
         came_from = {}
         g_score = {start: 0}
         f_score = {start: self.heuristic(start, goal)}
+
+        data = np.array(self.map.data).reshape((self.map.info.height, self.map.info.width))
+        if data[start[1]][start[0]] >= self.occ_thresh or data[goal[1]][goal[0]] >= self.occ_thresh:
+            self.get_logger().warn("Start or goal is in an occupied cell!")
+            return
 
         while open_set:
             current = heapq.heappop(open_set)[1]

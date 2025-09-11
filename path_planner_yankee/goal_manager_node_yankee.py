@@ -57,11 +57,19 @@ class GoalManager(Node):
             self.start_sequence = True
             self.get_logger().info("Secuencia iniciada")
             self.publish_next_waypoint()
-            time.sleep(0.5)  # Debounce
-        if msg.buttons[1] == 1:
+            time.sleep(1.0)  # Debounce
+        # Reiniciar secuencia si ya está iniciada
+        elif msg.buttons[0] == 1 and self.start_sequence:
+            self.get_logger().info("Secuencia reiniciada por botón 0")
             self.start_sequence = False
             self.reset_sequence = True
             self.current_index = 0
+            self.waypoints = []
+            time.sleep(1.0)  # Debounce
+        # if msg.buttons[1] == 1:
+        #     self.start_sequence = False
+        #     self.reset_sequence = True
+        #     self.current_index = 0
     def publish_next_waypoint(self):
         """Publicar el siguiente punto"""
         if len(self.waypoints) != 0 and self.start_sequence:

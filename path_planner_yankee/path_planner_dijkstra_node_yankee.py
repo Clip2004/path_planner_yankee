@@ -12,8 +12,8 @@ class DijkstraNode(Node):
         super().__init__('dijkstra_node')
         # --- add these params at __init__ ---
         self.occ_thresh = self.declare_parameter('occ_thresh', 100).value
-        self.robot_radius_m = self.declare_parameter('robot_radius_m', 0.5).value
-        self.safety_margin_m = self.declare_parameter('safety_margin_m', 0.05).value
+        self.robot_radius_m = self.declare_parameter('robot_radius_m', 0.3).value
+        self.safety_margin_m = self.declare_parameter('safety_margin_m', 0.01).value
 
         # Subscribers
         self.create_subscription(OccupancyGrid, '/map', self.map_callback, 10)
