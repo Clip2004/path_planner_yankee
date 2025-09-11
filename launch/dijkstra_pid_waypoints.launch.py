@@ -13,7 +13,7 @@ def generate_launch_description():
     config_path = os.path.join(
         get_package_share_directory('f112th_sim_2502_yankee'),
         'config',
-        'max_expand_params.yaml'   # asegúrate de que este sea el nombre del archivo
+        'map_expand_params.yaml'   # asegúrate de que este sea el nombre del archivo
     )
 
     path_planner_dijkstra_node_yankee = Node(
